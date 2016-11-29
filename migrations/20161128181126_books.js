@@ -15,7 +15,7 @@ exports.up = function(knex, Promise) {
     // cover_url
     table.text('cover_url').notNullable().defaultTo('');
     // created_at, updated_at
-    table.timestamps();
+    table.timestamps(true, true);
   });
 };
 
