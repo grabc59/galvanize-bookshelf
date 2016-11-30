@@ -78,6 +78,7 @@ exports.seed = function(knex, Promise) {
           cover_url: 'http://akamaicovers.oreilly.com/images/0636920032977/lrg.jpg',
           created_at: new Date('2016-06-26 14:26:16 UTC'),
           updated_at: new Date('2016-06-26 14:26:16 UTC')}),
+        knex.raw("SELECT setval('books_id_seq', (SELECT MAX(id) FROM books))")
       ]);
     });
 };
