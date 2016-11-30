@@ -53,8 +53,9 @@ router.post('/books', (req,res,next) => {
       genre: req.body.genre,
       description: req.body.description,
       cover_url: req.body.cover_url
-    })
-    .then(() => {
+    }, '*')
+    .then((result) => {
+      console.log(result[0]);
       const book = camelizeKeys(req.body);
       res.send(book);
    })
@@ -63,10 +64,28 @@ router.post('/books', (req,res,next) => {
    });
 });
 
-// router.patch('/books/:id', (req, res, next) => {
-//   return knex('books')
-//
-// })
+
+
+router.patch('/books/:id', (req, res, next) => {
+  return knex('books')
+    .where('id', req.params.id)
+    .update({
+      title: req.body.title,
+      author: req.body.author,
+      genre: req.body.genre,
+      description: req.body.description,
+      cover_url: req.body.cover_url
+    }, '*')
+    .then((result) => {
+      console.log(result);
+      const book = camelizeKeys(req.body);
+      res.send(book);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 
 
 
