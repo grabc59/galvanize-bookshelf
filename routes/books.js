@@ -46,17 +46,18 @@ router.get('/books/:id', function(req,res, next) {
 
 
 router.post('/books', (req,res,next) => {
-  return knex('books')
+   knex('books')
     .insert({
       title: req.body.title,
       author: req.body.author,
       genre: req.body.genre,
       description: req.body.description,
-      cover_url: req.body.cover_url
+      cover_url: req.body.coverUrl
     }, '*')
     .then((result) => {
-      console.log(result[0]);
-      const book = camelizeKeys(req.body);
+      // console.log(result[0]);
+      // console.log(req.body); // NOT THIS
+      const book = camelizeKeys(result[0]);
       res.send(book);
    })
      .catch((err) => {
@@ -69,16 +70,17 @@ router.post('/books', (req,res,next) => {
 router.patch('/books/:id', (req, res, next) => {
   return knex('books')
     .where('id', req.params.id)
+    .first()
     .update({
       title: req.body.title,
       author: req.body.author,
       genre: req.body.genre,
       description: req.body.description,
-      cover_url: req.body.cover_url
+      cover_url: req.body.coverUrl
     }, '*')
     .then((result) => {
-      console.log(result);
-      const book = camelizeKeys(req.body);
+      // console.log(result);
+      const book = camelizeKeys(result[0]);
       res.send(book);
     })
     .catch((err) => {
@@ -86,7 +88,28 @@ router.patch('/books/:id', (req, res, next) => {
     });
 });
 
-
+router.delete('/books/:id', (req, res, next) => {
+  let book;
+  knex('books')
+  .where('id', req.params.id)
+  .first()
+  .then((result) => {
+    if (!result) {
+      return next();
+    }
+    book = camelizeKeys(result);
+    return knex('books')
+      .del()
+      .where('id', req.params.id);
+  })
+  .then (() => {
+    delete book.id;
+    res.send(book);
+  })
+  .catch((err) => {
+    next(err);
+  });
+});
 
 
 
