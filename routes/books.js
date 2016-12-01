@@ -14,7 +14,7 @@ router.use(morgan('short')); // use morgan and format it's output
 
 // eslint-disable-next-line new-cap
 
-router.get('/books', function(req, res, next) {
+router.get('/', function(req, res, next) {
     knex('books')
         .orderBy('title')
         .then((result) => {
@@ -51,11 +51,13 @@ router.get('/books/:id', function(req, res, next) {
                 next(boom.create(404, 'Not Found'));
                 return;
             }
-        })
+        });
 });
 
 
 router.post('/books', (req, res, next) => {
+
+  // TODO: delete this object or use it
     const {
         title,
         author,
