@@ -20,7 +20,6 @@ router.get('/books', function(req, res, next) {
     .then((result) => {
       const book = camelizeKeys(result);
       res.send(book);
-      // res.send(result);
     })
     .catch((err) => {
       next(err);
@@ -30,14 +29,20 @@ router.get('/books', function(req, res, next) {
 
 router.get('/books/:id', function(req,res, next) {
   knex('books')
-    .where('id', req.params.id)
-    .first()
+    .max('id')
     .then((result) => {
-      if (!result) {
-        return next();
-      }
-      const book = camelizeKeys(result);
-      res.send(book);
+      // console.log(result[0]);
+      return knex('books')
+        .where('id', req.params.id)
+        .first()
+
+      .then((result) => {
+        if (!result) {
+          return next();
+        }
+        const book = camelizeKeys(result);
+        res.send(book);
+      })
     })
     .catch((err) => {
       next(err);
@@ -55,8 +60,7 @@ router.post('/books', (req,res,next) => {
       cover_url: req.body.coverUrl
     }, '*')
     .then((result) => {
-      // console.log(result[0]);
-      // console.log(req.body); // NOT THIS
+
       const book = camelizeKeys(result[0]);
       res.send(book);
    })
@@ -79,7 +83,6 @@ router.patch('/books/:id', (req, res, next) => {
       cover_url: req.body.coverUrl
     }, '*')
     .then((result) => {
-      // console.log(result);
       const book = camelizeKeys(result[0]);
       res.send(book);
     })
