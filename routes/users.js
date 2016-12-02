@@ -63,15 +63,18 @@ router.post('/users', (req, res, next) => {
   //       lastName: req.body.firstName,
   //       email: req.body.email,
   //       password: req.body.password,
-
   //     };
+
 
   if (email && password) {
     if (password.length > 7) {
     knex('users')
-      .where({email: req.body.email})
+      .where({email: email})
       .then(function (results) {
+
+        console.log(results);
         if (results.length === 0) {
+          // console.log(results);
             knex('users')
                 .insert({
                     first_name: firstName,
@@ -89,20 +92,20 @@ router.post('/users', (req, res, next) => {
                 });
 
             } else {
-              knex(boom.create(400, 'Email already exists'));
+              next(boom.create(400, 'Email already exists'));
             }
           });
         } else {
-
-          if (password.length < 8) {
               next(boom.create(400, 'Password must be at least 8 characters long'));
               return;
-          }
         }
       } else {
         if (!email) {
             next(boom.create(400, 'Email must not be blank'));
             return;
+        } else if (!password) {
+          next(boom.create(400, 'Password must be at least 8 characters long'));
+          return;
         }
       }
 });

@@ -66,15 +66,10 @@ router.post('/', (req, res, next) => {
     };
     var errObj = {
       title: boom.create(400, 'Title must not be blank'),
-      // title: 'Title must not be blank',
       author: boom.create(400, 'Author must not be blank'),
-      // author: 'Author must not be blank',
       genre: boom.create(400, 'Genre must not be blank'),
-      // genre: 'Genre must not be blank',
       description: boom.create(400, 'Description must not be blank'),
-      // description: 'Description must not be blank',
       cover_url: boom.create(400, 'Cover URL must not be blank')
-      // cover_url: 'Cover URL must not be blank',
     };
     for (var key in bodyObj) {
       if (!(bodyObj[key])) {
@@ -95,7 +90,7 @@ router.post('/', (req, res, next) => {
 
 
 
-router.patch('/books/:id', (req, res, next) => {
+router.patch('/:id', (req, res, next) => {
     return knex('books')
         .max('id')
         .then((result) => {
@@ -127,7 +122,7 @@ router.patch('/books/:id', (req, res, next) => {
 
 
 
-router.delete('/books/:id', (req, res, next) => {
+router.delete('/:id', (req, res, next) => {
     return knex('books')
         .max('id')
         .then((result) => {
