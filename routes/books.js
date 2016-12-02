@@ -57,23 +57,35 @@ router.get('/books/:id', function(req, res, next) {
 
 router.post('/books', (req, res, next) => {
 
-  // TODO: delete this object or use it
-    const {
-        title,
-        author,
-        genre,
-        description,
-        coverUrl
-    } = req.body;
-    if (title && author && genre && description && coverUrl) {
+    // const {
+    //     title,
+    //     author,
+    //     genre,
+    //     description,
+    //     coverUrl
+    // } = req.body;
+
+    const bodyObj = {
+        title: req.body.title,
+        author: req.body.author,
+        genre: req.body.genre,
+        description: req.body.description,
+        cover_url: req.body.coverUrl
+    };
+    const errObj = {
+      title: 'Title must not be blank',
+      author: 'Author must not be blank',
+      genre: 'Genre must not be blank',
+      description: 'Description must not be blank',
+      cover_url: 'Cover URL must not be blank',
+    }
+    for (var key in bodyObj) {
+      if (!(req.body.hasOwnProperty([key]))) {
+        next(boom.create(400, errObj[key]));
+    
+    // if (bodyObj.title && bodyObj.author && bodyObj.genre && bodyObj.description && bodyObj.coverUrl) {
         knex('books')
-            .insert({
-                title: req.body.title,
-                author: req.body.author,
-                genre: req.body.genre,
-                description: req.body.description,
-                cover_url: req.body.coverUrl
-            }, '*')
+            .insert( bodyObj, '*')
             .then((result) => {
                 const book = camelizeKeys(result[0]);
                 res.send(book);
@@ -81,29 +93,33 @@ router.post('/books', (req, res, next) => {
             .catch((err) => {
                 next(err);
             });
+    // } else {
+    //     // chose not to break this out into a function because this is specific to the 'post' requests for books.
+    //     if (!title) {
+    //         next(boom.create(400, 'Title must not be blank'));
+    //         return;
+    //     }
+    //     if (!author) {
+    //         next(boom.create(400, 'Author must not be blank'));
+    //         return;
+    //     }
+    //     if (!genre) {
+    //         next(boom.create(400, 'Genre must not be blank'));
+    //         return;
+    //     }
+    //     if (!description) {
+    //         next(boom.create(400, 'Description must not be blank'));
+    //         return;
+    //     }
+    //     if (!coverUrl) {
+    //         next(boom.create(400, 'Cover URL must not be blank'));
+    //         return;
+    //     }
+    // }
     } else {
-        // chose not to break this out into a function because this is specific to the 'post' requests for books.
-        if (!title) {
-            next(boom.create(400, 'Title must not be blank'));
-            return;
-        }
-        if (!author) {
-            next(boom.create(400, 'Author must not be blank'));
-            return;
-        }
-        if (!genre) {
-            next(boom.create(400, 'Genre must not be blank'));
-            return;
-        }
-        if (!description) {
-            next(boom.create(400, 'Description must not be blank'));
-            return;
-        }
-        if (!coverUrl) {
-            next(boom.create(400, 'Cover URL must not be blank'));
-            return;
-        }
+
     }
+  }
 });
 
 

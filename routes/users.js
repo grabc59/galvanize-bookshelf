@@ -15,22 +15,52 @@ var bcrypt = require('bcrypt');
 
 
 router.post('/users', (req, res, next) => {
+  const {
+      firstName,
+      lastName,
+      email,
+      password
+  } = req.body;
 
+  if (email && password) {
+    if (password.length > 7) {
     knex('users')
-        .insert({
-            first_name: req.body.firstName,
-            last_name: req.body.lastName,
-            email: req.body.email,
-            hashed_password: bcrypt.hashSync(req.body.password, 8)
-        }, '*')
-        .then((result) => {
-            const user = camelizeKeys(result[0]);
-            delete user.hashedPassword;
-            res.send(user);
-        })
-        .catch((err) => {
-            next(err);
-        });
+      .where({email: req.body.email})
+      .then(function (results) {
+        if (results.length === 0) {
+            knex('users')
+                .insert({
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email,
+                    hashed_password: bcrypt.hashSync(password, 8)
+                }, '*')
+                .then((result) => {
+                    const user = camelizeKeys(result[0]);
+                    delete user.hashedPassword;
+                    res.send(user);
+                })
+                .catch((err) => {
+                    next(err);
+                });
+
+            } else {
+              knex(boom.create(400, 'Email already exists'));
+            }
+          });
+        } else {
+
+          if (password.length < 8) {
+              next(boom.create(400, 'Password must be at least 8 characters long'));
+              return;
+          }
+        }
+      } else {
+        if (!email) {
+            next(boom.create(400, 'Email must not be blank'));
+            return;
+        }
+      }
 });
 
 module.exports = router;
