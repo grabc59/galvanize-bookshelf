@@ -93,6 +93,7 @@ router.post('/users', (req, res, next) => {
 
             } else {
               next(boom.create(400, 'Email already exists'));
+              return;
             }
           });
         } else {
