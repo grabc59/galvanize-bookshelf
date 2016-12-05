@@ -13,43 +13,6 @@ const {
 } = require('humps');
 var bcrypt = require('bcrypt');
 
-// router.post('/', (req, res, next) => {
-//     const bodyObj = {
-//       title: req.body.title,
-//       author: req.body.author,
-//       genre: req.body.genre,
-//       description: req.body.description,
-//       cover_url: req.body.coverUrl
-//     };
-//     var errObj = {
-//       title: boom.create(400, 'Title must not be blank'),
-//       // title: 'Title must not be blank',
-//       author: boom.create(400, 'Author must not be blank'),
-//       // author: 'Author must not be blank',
-//       genre: boom.create(400, 'Genre must not be blank'),
-//       // genre: 'Genre must not be blank',
-//       description: boom.create(400, 'Description must not be blank'),
-//       // description: 'Description must not be blank',
-//       cover_url: boom.create(400, 'Cover URL must not be blank')
-//       // cover_url: 'Cover URL must not be blank',
-//     };
-//     for (var key in bodyObj) {
-//       if (!(bodyObj[key])) {
-//         next(errObj[key]);
-//         return;
-//       }
-//     }
-//    knex('books')
-//       .insert( bodyObj, '*')
-//       .then((result) => {
-//           const book = camelizeKeys(result[0]);
-//           res.send(book);
-//       })
-//       .catch((err) => {
-//           next(err);
-//       });
-// });
-
 
 router.post('/users', (req, res, next) => {
   const {
@@ -58,12 +21,11 @@ router.post('/users', (req, res, next) => {
       email,
       password
   } = req.body;
-  // const bodyObj = {
-  //       firstName: req.body.firstName,
-  //       lastName: req.body.firstName,
-  //       email: req.body.email,
-  //       password: req.body.password,
-  //     };
+
+  var errObj = {
+      emailBlank: boom.create(400, 'Email must not be blank'),
+      password: boom.create(400, 'Password must be at least 8 characters long')
+  };
 
 
   if (email && password) {
@@ -71,10 +33,7 @@ router.post('/users', (req, res, next) => {
     knex('users')
       .where({email: email})
       .then(function (results) {
-
-        console.log(results);
         if (results.length === 0) {
-          // console.log(results);
             knex('users')
                 .insert({
                     first_name: firstName,

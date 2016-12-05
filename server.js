@@ -27,6 +27,7 @@ switch (app.get('env')) {
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+
 app.use(bodyParser.urlencoded({ extended: false}));
 
 const path = require('path');
@@ -47,7 +48,7 @@ const token = require('./routes/token');
 const users = require('./routes/users');
 
 app.use('/books', books);
-app.use(favorites);
+app.use('/favorites', favorites);
 app.use('/token', token);
 app.use(users);
 
